@@ -2,13 +2,20 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  TouchableOpacity,
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import React, {useState} from 'react';
 import {useStore} from '../store/store';
 import {ScreenContainer} from 'react-native-screens';
-import {COLORS, FONTFAMILY, FONTSIZE, SPACING} from '../theme/theme';
+import {
+  BORDERRADIUS,
+  COLORS,
+  FONTFAMILY,
+  FONTSIZE,
+  SPACING,
+} from '../theme/theme';
 import {ScrollView} from 'react-native';
 import ImageBackgroundInfo from '../components/ImageBackgroundInfo';
 
@@ -22,6 +29,7 @@ const DetailsScreen = ({navigation, route}: any) => {
     (state: any) => state.deleteFromFavoriteList,
   );
 
+  const [prices, setPrices] = useState(itemOfIndex.prices[0]);
   const [descriptionFull, setDescription] = useState(false);
 
   const BackHandler = () => {
@@ -74,6 +82,42 @@ const DetailsScreen = ({navigation, route}: any) => {
               </Text>
             </TouchableWithoutFeedback>
           )}
+          <Text style={styles.infoTitle}>Size</Text>
+        </View>
+        <View style={styles.sizeOuterContainer}>
+          {itemOfIndex.prices.map((data: any) => (
+            <TouchableOpacity
+              key={data.size}
+              onPress={() => {
+                setPrices(data);
+              }}
+              style={[
+                styles.sizeBox,
+                {
+                  borderColor:
+                    data.size == prices.size
+                      ? COLORS.primaryOrangeHex
+                      : COLORS.primaryDarkGreyHex,
+                },
+              ]}>
+              <Text
+                style={[
+                  styles.sizeText,
+                  {
+                    fontSize:
+                      itemOfIndex.type == 'bean'
+                        ? FONTSIZE.size_14
+                        : FONTSIZE.size_16,
+                    color:
+                      data.size == prices.size
+                        ? COLORS.primaryOrangeHex
+                        : COLORS.secondaryLightGreyHex,
+                  },
+                ]}>
+                {data.size}
+              </Text>
+            </TouchableOpacity>
+          ))}
         </View>
       </ScrollView>
     </View>
@@ -105,5 +149,23 @@ const styles = StyleSheet.create({
     fontSize: FONTSIZE.size_14,
     color: COLORS.primaryWhiteHex,
     marginBottom: SPACING.space_30,
+  },
+  sizeOuterContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: SPACING.space_20,
+  },
+  sizeText: {
+    fontFamily: FONTFAMILY.poppins_medium,
+  },
+  sizeBox: {
+    flex: 1,
+    backgroundColor: COLORS.primaryDarkGreyHex,
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: SPACING.space_24 * 2,
+    borderRadius: BORDERRADIUS.radius_10,
+    borderWidth: 2,
   },
 });
