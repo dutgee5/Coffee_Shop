@@ -1,8 +1,14 @@
-import {StatusBar, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import {
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
+import React, {useState} from 'react';
 import {useStore} from '../store/store';
 import {ScreenContainer} from 'react-native-screens';
-import {COLORS} from '../theme/theme';
+import {COLORS, FONTFAMILY, FONTSIZE, SPACING} from '../theme/theme';
 import {ScrollView} from 'react-native';
 import ImageBackgroundInfo from '../components/ImageBackgroundInfo';
 
@@ -15,6 +21,8 @@ const DetailsScreen = ({navigation, route}: any) => {
   const deleteFromFavoriteList = useStore(
     (state: any) => state.deleteFromFavoriteList,
   );
+
+  const [descriptionFull, setDescription] = useState(false);
 
   const BackHandler = () => {
     navigation.pop();
@@ -44,6 +52,29 @@ const DetailsScreen = ({navigation, route}: any) => {
           BackHandler={BackHandler}
           ToggleFavourite={ToggleFavourite}
         />
+        {/* description of the product */}
+        <View style={styles.footerInfoArea}>
+          <Text style={styles.infoTitle}>Description</Text>
+          {descriptionFull ? (
+            <TouchableWithoutFeedback
+              onPress={() => {
+                setDescription(prev => !prev);
+              }}>
+              <Text style={styles.descriptionText}>
+                {itemOfIndex.description}
+              </Text>
+            </TouchableWithoutFeedback>
+          ) : (
+            <TouchableWithoutFeedback
+              onPress={() => {
+                setDescription(prev => !prev);
+              }}>
+              <Text numberOfLines={3} style={styles.descriptionText}>
+                {itemOfIndex.description}
+              </Text>
+            </TouchableWithoutFeedback>
+          )}
+        </View>
       </ScrollView>
     </View>
   );
@@ -58,5 +89,21 @@ const styles = StyleSheet.create({
   },
   scollViewFlex: {
     flexGrow: 1,
+  },
+  footerInfoArea: {
+    padding: SPACING.space_20,
+  },
+  infoTitle: {
+    fontFamily: FONTFAMILY.poppins_semibold,
+    fontSize: FONTSIZE.size_16,
+    color: COLORS.primaryWhiteHex,
+    marginBottom: SPACING.space_10,
+  },
+  descriptionText: {
+    letterSpacing: 0.5,
+    fontFamily: FONTFAMILY.poppins_regular,
+    fontSize: FONTSIZE.size_14,
+    color: COLORS.primaryWhiteHex,
+    marginBottom: SPACING.space_30,
   },
 });
