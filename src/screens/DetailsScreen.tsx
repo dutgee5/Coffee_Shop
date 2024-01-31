@@ -18,6 +18,7 @@ import {
 } from '../theme/theme';
 import {ScrollView} from 'react-native';
 import ImageBackgroundInfo from '../components/ImageBackgroundInfo';
+import PaymentFooter from '../components/PaymentFooter';
 
 const DetailsScreen = ({navigation, route}: any) => {
   const itemOfIndex = useStore((state: any) =>
@@ -29,11 +30,38 @@ const DetailsScreen = ({navigation, route}: any) => {
     (state: any) => state.deleteFromFavoriteList,
   );
 
-  const [prices, setPrices] = useState(itemOfIndex.prices[0]);
+  const addToCart = useStore((state: any) => state.addToCart);
+  const calculateCartPrice = useStore((state: any) => state.calculateCartPrice);
+
+  const [price, setPrice] = useState(itemOfIndex.prices[0]);
   const [descriptionFull, setDescription] = useState(false);
 
   const BackHandler = () => {
     navigation.pop();
+  };
+
+  const addToCartHandler = ({
+    id,
+    index,
+    name,
+    roasted,
+    imagelink_square,
+    special_ingredient,
+    type,
+    price,
+  }: any) => {
+    addToCart({
+      id,
+      index,
+      name,
+      roasted,
+      imagelink_square,
+      special_ingredient,
+      type,
+      prices: [{...price, quantity: 1}],
+    });
+    calculateCartPrice();
+    navigation.navigate('Cart');
   };
 
   const ToggleFavourite = (favourite: boolean, type: string, id: string) => {
@@ -89,13 +117,13 @@ const DetailsScreen = ({navigation, route}: any) => {
               <TouchableOpacity
                 key={data.size}
                 onPress={() => {
-                  setPrices(data);
+                  setPrice(data);
                 }}
                 style={[
                   styles.sizeBox,
                   {
                     borderColor:
-                      data.size == prices.size
+                      data.size == price.size
                         ? COLORS.primaryOrangeHex
                         : COLORS.primaryDarkGreyHex,
                   },
@@ -109,7 +137,7 @@ const DetailsScreen = ({navigation, route}: any) => {
                           ? FONTSIZE.size_14
                           : FONTSIZE.size_16,
                       color:
-                        data.size == prices.size
+                        data.size == price.size
                           ? COLORS.primaryOrangeHex
                           : COLORS.secondaryLightGreyHex,
                     },
@@ -120,6 +148,22 @@ const DetailsScreen = ({navigation, route}: any) => {
             ))}
           </View>
         </View>
+        <PaymentFooter
+          price={price}
+          buttonTitle={'Add to Cart'}
+          buttonPresHandler={() => {
+            addToCartHandler({
+              id: itemOfIndex.id,
+              index: itemOfIndex.index,
+              name: itemOfIndex.name,
+              roasted: itemOfIndex.roasted,
+              imagelink_square: itemOfIndex.imagelink_square,
+              special_ingredient: itemOfIndex.special_ingredient,
+              type: itemOfIndex.type,
+              price: price,
+            });
+          }}
+        />
       </ScrollView>
     </View>
   );
@@ -134,6 +178,7 @@ const styles = StyleSheet.create({
   },
   scollViewFlex: {
     flexGrow: 1,
+    justifyContent: 'space-between',
   },
   footerInfoArea: {
     padding: SPACING.space_20,
