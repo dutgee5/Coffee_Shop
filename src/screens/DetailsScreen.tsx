@@ -83,41 +83,42 @@ const DetailsScreen = ({navigation, route}: any) => {
             </TouchableWithoutFeedback>
           )}
           <Text style={styles.infoTitle}>Size</Text>
-        </View>
-        <View style={styles.sizeOuterContainer}>
-          {itemOfIndex.prices.map((data: any) => (
-            <TouchableOpacity
-              key={data.size}
-              onPress={() => {
-                setPrices(data);
-              }}
-              style={[
-                styles.sizeBox,
-                {
-                  borderColor:
-                    data.size == prices.size
-                      ? COLORS.primaryOrangeHex
-                      : COLORS.primaryDarkGreyHex,
-                },
-              ]}>
-              <Text
+
+          <View style={styles.sizeOuterContainer}>
+            {itemOfIndex.prices.map((data: any) => (
+              <TouchableOpacity
+                key={data.size}
+                onPress={() => {
+                  setPrices(data);
+                }}
                 style={[
-                  styles.sizeText,
+                  styles.sizeBox,
                   {
-                    fontSize:
-                      itemOfIndex.type == 'bean'
-                        ? FONTSIZE.size_14
-                        : FONTSIZE.size_16,
-                    color:
+                    borderColor:
                       data.size == prices.size
                         ? COLORS.primaryOrangeHex
-                        : COLORS.secondaryLightGreyHex,
+                        : COLORS.primaryDarkGreyHex,
                   },
                 ]}>
-                {data.size}
-              </Text>
-            </TouchableOpacity>
-          ))}
+                <Text
+                  style={[
+                    styles.sizeText,
+                    {
+                      fontSize:
+                        itemOfIndex.type == 'bean'
+                          ? FONTSIZE.size_14
+                          : FONTSIZE.size_16,
+                      color:
+                        data.size == prices.size
+                          ? COLORS.primaryOrangeHex
+                          : COLORS.secondaryLightGreyHex,
+                    },
+                  ]}>
+                  {data.size}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
       </ScrollView>
     </View>
