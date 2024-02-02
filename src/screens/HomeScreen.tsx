@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -50,6 +51,9 @@ const HomeScreen = ({navigation}: any) => {
   const CoffeeList = useStore((state: any) => state.CoffeeList);
   const BeanList = useStore((state: any) => state.BeanList);
 
+  const addToCart = useStore((state: any) => state.addToCart);
+  const calculateCartPrice = useStore((state: any) => state.calculateCartPrice);
+
   const [categories, setCategories] = useState(
     getCategoriesFromData(CoffeeList),
   );
@@ -90,6 +94,34 @@ const HomeScreen = ({navigation}: any) => {
     setSearchText('');
   };
 
+  const CoffeCardAddToCard = ({
+    id,
+    index,
+    name,
+    roasted,
+    imagelink_square,
+    special_ingredient,
+    type,
+    prices,
+  }: any) => {
+    addToCart({
+      id,
+      index,
+      name,
+      roasted,
+      imagelink_square,
+      special_ingredient,
+      type,
+      prices,
+    });
+    calculateCartPrice();
+    ToastAndroid.showWithGravity(
+      '${name} is Added to Cart',
+      ToastAndroid.SHORT,
+      ToastAndroid.CENTER,
+    );
+  };
+
   return (
     <View style={styles.ScreenContainer}>
       <StatusBar backgroundColor={COLORS.primaryBlackHex} />
@@ -123,7 +155,7 @@ const HomeScreen = ({navigation}: any) => {
             value={searchText}
             onChangeText={text => {
               setSearchText(text);
-              searchCoffe(text)
+              searchCoffe(text);
             }}
             placeholderTextColor={COLORS.primaryLightGreyHex}
             style={styles.TextInputContainer}
@@ -198,13 +230,14 @@ const HomeScreen = ({navigation}: any) => {
           keyExtractor={item => item.id}
           renderItem={({item}) => {
             return (
-              <TouchableOpacity onPress={() => {
-                navigation.push('Details',{
-                  index:item.index,
-                  id:item.id,
-                  type:item.type
-                });
-              }}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.push('Details', {
+                    index: item.index,
+                    id: item.id,
+                    type: item.type,
+                  });
+                }}>
                 <CoffeeCard
                   id={item.id}
                   index={item.index}
@@ -215,7 +248,7 @@ const HomeScreen = ({navigation}: any) => {
                   special_ingredient={item.special_ingredient}
                   average_rating={item.average_rating}
                   price={item.prices[2]}
-                  buttonPressHandler={() => {}}
+                  buttonPressHandler={CoffeCardAddToCard}
                 />
               </TouchableOpacity>
             );
@@ -235,13 +268,14 @@ const HomeScreen = ({navigation}: any) => {
           keyExtractor={item => item.id}
           renderItem={({item}) => {
             return (
-              <TouchableOpacity onPress={() => {
-                navigation.push('Details',{
-                  index:item.index,
-                  id:item.id,
-                  type:item.type,
-                });
-              }}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.push('Details', {
+                    index: item.index,
+                    id: item.id,
+                    type: item.type,
+                  });
+                }}>
                 <CoffeeCard
                   id={item.id}
                   index={item.index}
@@ -252,7 +286,7 @@ const HomeScreen = ({navigation}: any) => {
                   special_ingredient={item.special_ingredient}
                   average_rating={item.average_rating}
                   price={item.prices[2]}
-                  buttonPressHandler={() => {}}
+                  buttonPressHandler={CoffeCardAddToCard}
                 />
               </TouchableOpacity>
             );
